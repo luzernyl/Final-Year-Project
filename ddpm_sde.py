@@ -42,8 +42,6 @@ def sample(img_size, sde, model, solver, eps, n, device):
                 solve = WeakOrder2RK(sde, score_fn)
             elif solver.lower() == 'srk2':
                 solve = SRK2Solver(sde, score_fn)
-            elif solver.lower() == 'weak_em':
-                solve = WeakEulerMaruyama(sde, score_fn)
             else:
                 raise NotImplementedError(f"Solver unknown.")
             
@@ -159,7 +157,7 @@ def launch():
     args.grad_clip = 1
     args.sde = sde_lib.VPSDE()
     args.eps = 1e-5
-    args.solver = 'EM' # ['EM', 'Milstein', 'SRK1']
+    args.solver = 'EM' # ['EM', 'SRK1', 'SRK2', 'SIE', 'WeakOrder2RK']
     args.ckpt = ""
     train(args)
     

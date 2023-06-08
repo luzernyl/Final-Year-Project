@@ -122,17 +122,3 @@ class WeakOrder2RK(Solver):
           + 0.25 * (diffusion_pos[:, None, None, None] + diffusion_min[:, None, None, None] + 2 * diffusion[:, None, None, None]) * dw \
           + 0.25 / np.sqrt(-dt) * (diffusion_pos[:, None, None, None] - diffusion_min[:, None, None, None]) * (np.square(dw.cpu()) + dt).to('cuda')
       return x
-
-class WeakEulerMaruyama(Solver):
-  def __init__(self, sde, score_fn):
-    super().__init__(sde, score_fn)
-    
-  def update_fn(self, x, t):
-      dt = -1. / self.rsde.N
-      z = torch.randn_like(x)
-      dw = np.sqrt(-dt) * z
-      drift, diffusion, _ = self.rsde.sde(x, t)
-      s = 1 if random.random() < 0.5 else -1
-      x = x + drift * dt + diffusion[:, None, None, None] * np.sqrt(-dt) * s #np.sign(random.random() - 0.5)
-      return x
-
